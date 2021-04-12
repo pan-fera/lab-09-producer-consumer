@@ -58,7 +58,7 @@ void Downloader::DownloadPage() {
   }
 }
 
-void Downloader::DownloadHttp(std::string&& host, std::string&& target, int depth) {
+void Downloader::DownloadHttp(std::string&& host, std::string&& target, size_t depth) {
   try {
     boost::asio::io_context ioc{};
 
@@ -97,7 +97,7 @@ void Downloader::DownloadHttp(std::string&& host, std::string&& target, int dept
   }
 }
 
-void Downloader::DownloadHttps(std::string&& host,  std::string&& target, int depth) {
+void Downloader::DownloadHttps(std::string&& host,  std::string&& target, size_t depth) {
   try
   {
     auto const port = "443"; // https - 443, http - 80

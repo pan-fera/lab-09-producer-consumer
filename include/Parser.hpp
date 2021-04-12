@@ -9,7 +9,7 @@
 #include <atomic>
 struct URL{
   std::string url;
-  int depth;
+  size_t depth;
 };
 class Parser{
  public:

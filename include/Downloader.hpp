@@ -13,7 +13,7 @@ struct Page{
   std::string page;
   std::string protocol;
   std::string host;
-  int depth;
+  size_t depth;
 };
 class Downloader {
  public:
@@ -22,8 +22,8 @@ class Downloader {
   inline static Queue<Page> queue_pages;
   //static std::atomic<bool> _finish;
  private:
-  static void DownloadHttp(std::string&& host, std::string&& target, int depth);
-  static void DownloadHttps(std::string&& host, std::string&& target, int depth);
+  static void DownloadHttp(std::string&& host, std::string&& target, size_t depth);
+  static void DownloadHttps(std::string&& host, std::string&& target, size_t depth);
 
 
 };
