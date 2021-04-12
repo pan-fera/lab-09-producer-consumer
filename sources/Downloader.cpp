@@ -3,7 +3,6 @@
 //
 
 #include "Downloader.hpp"
-#include "Queue.hpp"
 #include "root_certificates.hpp"
 #include <cstdlib>
 #include <iostream>
@@ -15,7 +14,6 @@
 #include <boost/asio/ssl/error.hpp>
 #include <boost/asio/ssl/stream.hpp>
 #include <string>
-#include <fstream>
 #include <boost/beast/ssl.hpp>
 #include "Parser.hpp"
 
@@ -26,7 +24,7 @@ namespace beast = boost::beast;
 
 
 
-void parse_url(std::string& protocol, [[maybe_unused]] std::string& host, [[maybe_unused]] std::string& target, std::string& url){
+void parse_url(std::string& protocol, std::string& host, std::string& target, std::string& url){
 size_t p_s = url.find_first_of(':');
 protocol = url.substr(0, p_s);
 size_t h_s = url.find('/', p_s + 3);
@@ -47,7 +45,8 @@ void Downloader::DownloadPage() {
 
     std::regex rx(R"(^http[s]?://.*)");
     if (!regex_match(url.begin(), url.end(), rx))
-      throw std::runtime_error("Wrong url");
+      return;
+      //throw std::runtime_error("Wrong url");
 
     std::string protocol;
     std::string host;
@@ -127,7 +126,7 @@ void Downloader::DownloadHttps(std::string&& host,  std::string&& target, int de
     http::read(stream, buffer, res);
 
     Page _page {res.body(), "https://", host,  depth};
-    //TODO::change depth
+
     queue_pages.push(_page);
     boost::system::error_code ec;
     stream.shutdown(ec);

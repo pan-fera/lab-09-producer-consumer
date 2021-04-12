@@ -50,7 +50,7 @@ static void search_for_links(GumboNode* node, Page p) {
       std::cout << tmp << std::endl;
       Parser::queue_writer.push(tmp);
     } else{
-      if (p.depth - 1 == 0) return;
+      if (p.depth  == 1) return;
       URL _url{tmp, p.depth - 1};
       Parser::queue_url.push(_url);
     }
@@ -67,7 +67,7 @@ void Parser::parse() {
   if (!Downloader::queue_pages.empty()) {
     Page _tmp = Downloader::queue_pages.front();
     GumboOutput* output =
-        gumbo_parse(_tmp.page.c_str());
+        gumbo_parse(_tmp.page.c_str());//const char*
     search_for_links(output->root, _tmp);
     gumbo_destroy_output(&kGumboDefaultOptions, output);
     Downloader::queue_pages.pop();
