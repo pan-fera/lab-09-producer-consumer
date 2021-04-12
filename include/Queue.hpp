@@ -15,7 +15,7 @@ template <typename T>
 class Queue {
  public:
   Queue():_counter(0){}
-  void push(T& obj) {
+  void push(T&& obj) {
     std::lock_guard<std::mutex> lock(_mut);
     _queue.push(obj);
     ++_counter;

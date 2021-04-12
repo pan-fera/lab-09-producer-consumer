@@ -86,13 +86,13 @@ void Downloader::DownloadHttp(std::string&& host, std::string&& target, int dept
 
 
     Page _page {res.body(), "http://", host,  depth};
-     queue_pages.push(_page);
+     queue_pages.push(std::move(_page));
 
     if (ec == boost::asio::error::eof) {
       ec.assign(0, ec.category());
     }
   } catch (std::exception const& e) {
-    std::cerr << "Error: " << e.what() << std::endl;
+   // std::cerr << "Error: " << e.what() << std::endl;
     // return EXIT_FAILURE;
   }
 }
@@ -127,7 +127,7 @@ void Downloader::DownloadHttps(std::string&& host,  std::string&& target, int de
 
     Page _page {res.body(), "https://", host,  depth};
 
-    queue_pages.push(_page);
+    queue_pages.push(std::move(_page));
     boost::system::error_code ec;
     stream.shutdown(ec);
     if (ec == boost::asio::error::eof)
@@ -138,7 +138,7 @@ void Downloader::DownloadHttps(std::string&& host,  std::string&& target, int de
   }
   catch (std::exception const& e)
   {
-    std::cerr << "Error: " << e.what() << std::endl;
+    //std::cerr << "Error: " << e.what() << std::endl;
     //return EXIT_FAILURE;
   }
 

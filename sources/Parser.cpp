@@ -30,16 +30,17 @@ static void search_for_links(GumboNode* node, Page p) {
 
   if (gumbo_get_attribute(&node->v.element.attributes, "href"))
     href = gumbo_get_attribute(&node->v.element.attributes, "href");
-  else if (gumbo_get_attribute(&node->v.element.attributes, "content"))
-    href = gumbo_get_attribute(&node->v.element.attributes, "content");
-  else if (node->v.element.tag == GUMBO_TAG_IMAGE ||
-           node->v.element.tag == GUMBO_TAG_IMG)
-    href = gumbo_get_attribute(&node->v.element.attributes, "src");
+ // else if (gumbo_get_attribute(&node->v.element.attributes, "content"))
+  //  href = gumbo_get_attribute(&node->v.element.attributes, "content");
+ // else if (node->v.element.tag == GUMBO_TAG_IMAGE ||
+  //         node->v.element.tag == GUMBO_TAG_IMG)
+  //  href = gumbo_get_attribute(&node->v.element.attributes, "src");
 
   if (href) {
-    std::regex rx(R"((^http[s]?://.*)|((/?[^\0]\|/).*))");
+    std::regex rx(R"((^http[s]?://.*)|(/.*))");
     std::string tmp = href->value;
     if (!regex_match(tmp.begin(), tmp.end(), rx)) return;
+    //std::cout<<"tyt"<<std::endl;
     if (href->value[0] == '/') {
       tmp = p.protocol + p.host + href->value;
     } else {
@@ -47,12 +48,12 @@ static void search_for_links(GumboNode* node, Page p) {
     }
 
     if (isImage(tmp)) {
-      std::cout << tmp << std::endl;
-      Parser::queue_writer.push(tmp);
+      //std::cout << tmp << std::endl;
+      Parser::queue_writer.push(std::move(tmp));
     } else{
       if (p.depth  == 1) return;
       URL _url{tmp, p.depth - 1};
-      Parser::queue_url.push(_url);
+      Parser::queue_url.push(std::move(_url));
     }
   }
 
