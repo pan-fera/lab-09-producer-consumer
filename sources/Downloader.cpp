@@ -91,7 +91,7 @@ void Downloader::DownloadHttp(std::string&& host, std::string&& target, int dept
     if (ec == boost::asio::error::eof) {
       ec.assign(0, ec.category());
     }
-  } catch (std::exception const& e) {
+  } catch (...) {
    // std::cerr << "Error: " << e.what() << std::endl;
     // return EXIT_FAILURE;
   }
@@ -136,7 +136,7 @@ void Downloader::DownloadHttps(std::string&& host,  std::string&& target, int de
     }
 
   }
-  catch (std::exception const& e)
+  catch (...)
   {
     //std::cerr << "Error: " << e.what() << std::endl;
     //return EXIT_FAILURE;

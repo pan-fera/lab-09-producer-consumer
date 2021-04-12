@@ -30,11 +30,11 @@ static void search_for_links(GumboNode* node, Page p) {
 
   if (gumbo_get_attribute(&node->v.element.attributes, "href"))
     href = gumbo_get_attribute(&node->v.element.attributes, "href");
- // else if (gumbo_get_attribute(&node->v.element.attributes, "content"))
-  //  href = gumbo_get_attribute(&node->v.element.attributes, "content");
- // else if (node->v.element.tag == GUMBO_TAG_IMAGE ||
-  //         node->v.element.tag == GUMBO_TAG_IMG)
-  //  href = gumbo_get_attribute(&node->v.element.attributes, "src");
+  else if (gumbo_get_attribute(&node->v.element.attributes, "content"))
+    href = gumbo_get_attribute(&node->v.element.attributes, "content");
+  else if (node->v.element.tag == GUMBO_TAG_IMAGE ||
+           node->v.element.tag == GUMBO_TAG_IMG)
+    href = gumbo_get_attribute(&node->v.element.attributes, "src");
 
   if (href) {
     std::regex rx(R"((^http[s]?://.*)|(/.*))");
@@ -65,6 +65,7 @@ static void search_for_links(GumboNode* node, Page p) {
 
 void Parser::parse() {
 //std::cout<<"tyt"<<std::endl;
+try{
   if (!Downloader::queue_pages.empty()) {
     Page _tmp = Downloader::queue_pages.front();
     GumboOutput* output =
@@ -72,5 +73,8 @@ void Parser::parse() {
     search_for_links(output->root, _tmp);
     gumbo_destroy_output(&kGumboDefaultOptions, output);
     Downloader::queue_pages.pop();
-  }
+  }}
+catch (...) {
+
+}
 }
