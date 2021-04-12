@@ -50,8 +50,11 @@ output = (vm.count("output"))? vm["output"].as<std::string>() : "output.txt";
   }
 
   std::ofstream ofs{output};
-  while(!Parser::queue_writer.empty())
-    ofs << Parser::queue_writer.front() << std::endl;
+  while(!Parser::queue_writer.empty()) {
+    std::string _tmp = Parser::queue_writer.front();
+    ofs << _tmp << std::endl;
+    std::cout << _tmp << std::endl;
+  }
   ofs.close();
 return 0;
 }
