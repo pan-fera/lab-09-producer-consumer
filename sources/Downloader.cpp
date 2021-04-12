@@ -16,14 +16,6 @@
 #include <boost/asio/ssl/stream.hpp>
 #include <string>
 #include <fstream>
-#include <stdlib.h>
-
-#include <fstream>
-#include <iostream>
-#include <string>
-
-#include <boost/beast/core.hpp>
-#include <boost/beast/http.hpp>
 #include <boost/beast/ssl.hpp>
 #include "Parser.hpp"
 
@@ -46,13 +38,12 @@ size_t h_s = url.find('/', p_s + 3);
     host = url.substr(p_s + 3, h_s - p_s - 3);
     target = url.substr(h_s, url.size() - h_s + 1);
   }
-std::cout<<protocol<<" "<<host<<" "<<target<<std::endl;
 }
 
 void Downloader::DownloadPage() {
-  //std::cout<<"tyt"<<std::endl;
   if(!Parser::queue_url.empty()) {
-    std::string url = Parser::queue_url.front().url;
+    URL _tmp = Parser::queue_url.front();
+    std::string url = _tmp.url;
 
     std::regex rx(R"(^http[s]?://.*)");
     if (!regex_match(url.begin(), url.end(), rx))
@@ -62,8 +53,8 @@ void Downloader::DownloadPage() {
     std::string host;
     std::string target;
     parse_url(protocol, host, target, url);
-    if (protocol == "http") DownloadHttp(std::move(host), std::move(target),Parser::queue_url.front().depth);
-    if (protocol == "https") DownloadHttps(std::move(host), std::move(target), Parser::queue_url.front().depth);
+    if (protocol == "http") DownloadHttp(std::move(host), std::move(target),_tmp.depth);
+    if (protocol == "https") DownloadHttps(std::move(host), std::move(target), _tmp.depth);
     Parser::queue_url.pop();
   }
 }
@@ -96,11 +87,8 @@ void Downloader::DownloadHttp(std::string&& host, std::string&& target, int dept
 
 
     Page _page {res.body(), "http://", host,  depth};
-  //TODO::change depth
      queue_pages.push(_page);
-    std::ofstream ofs{"out.txt"}; // запись html-страницы в файл
-    ofs << res;
-    ofs.close();
+
     if (ec == boost::asio::error::eof) {
       ec.assign(0, ec.category());
     }
@@ -133,9 +121,6 @@ void Downloader::DownloadHttps(std::string&& host,  std::string&& target, int de
 
     http::write(stream, req);
 
-    //boost::beast::flat_buffer buffer;
-    // http::response<http::dynamic_body> res;
-
     beast::flat_buffer buffer;
     http::response<http::string_body> res;
 
@@ -144,11 +129,6 @@ void Downloader::DownloadHttps(std::string&& host,  std::string&& target, int de
     Page _page {res.body(), "https://", host,  depth};
     //TODO::change depth
     queue_pages.push(_page);
-    std::ofstream ofs{"out.txt"}; // запись html-страницы в файл
-    ofs << res;
-    ofs.close();
-
-    // Gracefully close the stream
     boost::system::error_code ec;
     stream.shutdown(ec);
     if (ec == boost::asio::error::eof)

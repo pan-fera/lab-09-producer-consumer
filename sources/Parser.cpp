@@ -28,7 +28,6 @@ static void search_for_links(GumboNode* node, Page p) {
   }
   GumboAttribute* href = nullptr;
 
-  //  if (node->v.element.tag == GUMBO_TAG_A &&
   if (gumbo_get_attribute(&node->v.element.attributes, "href"))
     href = gumbo_get_attribute(&node->v.element.attributes, "href");
   else if (gumbo_get_attribute(&node->v.element.attributes, "content"))
@@ -36,27 +35,22 @@ static void search_for_links(GumboNode* node, Page p) {
   else if (node->v.element.tag == GUMBO_TAG_IMAGE ||
            node->v.element.tag == GUMBO_TAG_IMG)
     href = gumbo_get_attribute(&node->v.element.attributes, "src");
-  if (href) {
-    // if (!(node->v.element.tag == GUMBO_TAG_IMAGE || node->v.element.tag ==
-    // GUMBO_TAG_IMG || isImage(href->value)))
-    //   return;
-    // std::cout << href->value <<std::endl;
 
+  if (href) {
     std::regex rx(R"((^http[s]?://.*)|((/?[^\0]\|/).*))");
     std::string tmp = href->value;
     if (!regex_match(tmp.begin(), tmp.end(), rx)) return;
     if (href->value[0] == '/') {
       tmp = p.protocol + p.host + href->value;
-       //std::cout<<tmp<<std::endl;
     } else {
       tmp = href->value;
-       //std::cout << tmp << std::endl;
     }
+
     if (isImage(tmp)) {
       std::cout << tmp << std::endl;
       Parser::queue_writer.push(tmp);
-    } else {
-      if (p.depth -1 == 0) return;
+    } else{
+      if (p.depth - 1 == 0) return;
       URL _url{tmp, p.depth - 1};
       Parser::queue_url.push(_url);
     }
@@ -69,11 +63,12 @@ static void search_for_links(GumboNode* node, Page p) {
 }
 
 void Parser::parse() {
-  //std::cout<<"tyt"<<std::endl;
+//std::cout<<"tyt"<<std::endl;
   if (!Downloader::queue_pages.empty()) {
+    Page _tmp = Downloader::queue_pages.front();
     GumboOutput* output =
-        gumbo_parse(Downloader::queue_pages.front().page.c_str());
-    search_for_links(output->root, Downloader::queue_pages.front());
+        gumbo_parse(_tmp.page.c_str());
+    search_for_links(output->root, _tmp);
     gumbo_destroy_output(&kGumboDefaultOptions, output);
     Downloader::queue_pages.pop();
   }

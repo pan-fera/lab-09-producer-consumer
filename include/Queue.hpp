@@ -9,32 +9,35 @@
 #include <mutex>
 #include <queue>
 #include <string>
-#include <shared_mutex>
+
 
 template <typename T>
 class Queue {
  public:
+  Queue():_counter(0){}
   void push(T& obj) {
-    std::lock_guard<std::shared_mutex> lock(_mut);
+    std::lock_guard<std::mutex> lock(_mut);
     _queue.push(obj);
+    ++_counter;
   }
   T front() {
-    _mut.lock_shared();
+    std::lock_guard<std::mutex> lock(_mut);
     T _tmp = _queue.front();
-    _mut.unlock_shared();
+    _queue.pop();
+  //  --_counter;
     return _tmp;
   }
   void pop() {
-    std::lock_guard<std::shared_mutex> lock(_mut);
-    _queue.pop();
+    std::lock_guard<std::mutex> lock(_mut);
+    --_counter;
   }
   bool empty() {
-    std::lock_guard<std::shared_mutex> lock(_mut);
+    std::lock_guard<std::mutex> lock(_mut);
     return _queue.empty();
   }
-
+  int _counter;
  private:
-  std::shared_mutex _mut;
+  std::mutex _mut;
   std::queue<T> _queue;
 };
 

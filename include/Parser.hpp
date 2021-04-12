@@ -6,7 +6,7 @@
 #define TEMPLATE_PARSER_HPP
 #include <iostream>
 #include "Queue.hpp"
-
+#include <atomic>
 struct URL{
   std::string url;
   int depth;
@@ -17,7 +17,7 @@ class Parser{
   static void parse();
   inline static Queue<URL> queue_url;
   inline static Queue<std::string> queue_writer;
-
+ // static std::atomic<bool> _finish;
 };
 
 #endif  // TEMPLATE_PARSER_HPP

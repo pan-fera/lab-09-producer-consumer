@@ -20,9 +20,11 @@ class Downloader {
   explicit Downloader() = delete;
   static void DownloadPage();
   inline static Queue<Page> queue_pages;
+  //static std::atomic<bool> _finish;
  private:
   static void DownloadHttp(std::string&& host, std::string&& target, int depth);
   static void DownloadHttps(std::string&& host, std::string&& target, int depth);
+
 
 };
 
