@@ -68,7 +68,7 @@ static void search_for_links(GumboNode* node, Page p) {
   }
 }
 
-int Parser::parse() {
+void Parser::parse() {
   //std::cout<<"tyt"<<std::endl;
   if (!Downloader::queue_pages.empty()) {
     GumboOutput* output =
@@ -77,5 +77,4 @@ int Parser::parse() {
     gumbo_destroy_output(&kGumboDefaultOptions, output);
     Downloader::queue_pages.pop();
   }
-  return 0;
 }

@@ -14,7 +14,7 @@ struct URL{
 class Parser{
  public:
   explicit Parser() = delete;
-  static int parse();
+  static void parse();
   inline static Queue<URL> queue_url;
   inline static Queue<std::string> queue_writer;
 
