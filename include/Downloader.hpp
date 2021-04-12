@@ -5,27 +5,25 @@
 #ifndef TEMPLATE_DOWNLOADER_HPP
 #define TEMPLATE_DOWNLOADER_HPP
 #include <iostream>
-#include <regex>
+#include "Downloader.hpp"
 #include "Queue.hpp"
-#include "ThreadPool.h"
-#include "Parser.hpp"
+
 struct Page{
   std::string page;
   std::string protocol;
   std::string host;
+  std::string target;
   size_t depth;
 };
+
 class Downloader {
  public:
   explicit Downloader() = delete;
   static void DownloadPage();
   inline static Queue<Page> queue_pages;
-  //static std::atomic<bool> _finish;
  private:
-  static void DownloadHttp(std::string&& host, std::string&& target, size_t depth);
-  static void DownloadHttps(std::string&& host, std::string&& target, size_t depth);
-
-
+  static void DownloadHttp(Page&& _page);
+  static void DownloadHttps(Page&& _page);
 };
 
 #endif  // TEMPLATE_DOWNLOADER_HPP

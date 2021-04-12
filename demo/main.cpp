@@ -37,25 +37,21 @@ network_threads = (vm.count("network_threads"))?  vm["network_threads"].as<size_
 parser_threads = (vm.count("parser_threads"))? vm["parser_threads"].as<size_t>() : 1;
 output = (vm.count("output"))? vm["output"].as<std::string>() : "output.txt";
 
-std::cout << url << " "<< depth << " "<< network_threads<< " "<< parser_threads<< " "<< output<< std::endl;
-return 0;
-}/*
-int main()
-{
-  ThreadPool pool1(6);
-  ThreadPool pool2(2);
+  ThreadPool pool_network(network_threads);
+  ThreadPool pool_parser(parser_threads);
   //a.DownloadPage("http://www.ctyme.com/intr/");
-  URL url{"https://www.cyberforum.ru/boost-cpp/thread2383592.html", 2};
-  Parser::queue_url.push(std::move(url));
+  URL _url{url, depth};
+  Parser::queue_url.push(std::move(_url));
 
   while (!Parser::queue_url.empty() || !Downloader::queue_pages.empty() ||
-      Downloader::queue_pages._counter || Parser::queue_url._counter){
-    pool1.enqueue([] { Downloader::DownloadPage(); });
-    pool2.enqueue([] { Parser::parse(); });
-
-
+         Downloader::queue_pages._counter || Parser::queue_url._counter){
+    pool_network.enqueue([] { Downloader::DownloadPage(); });
+    pool_parser.enqueue([] { Parser::parse(); });
   }
+
+  std::ofstream ofs{output};
   while(!Parser::queue_writer.empty())
-    std::cout << Parser::queue_writer.front() << std::endl;
-  }
-*/
+    ofs << Parser::queue_writer.front() << std::endl;
+  ofs.close();
+return 0;
+}

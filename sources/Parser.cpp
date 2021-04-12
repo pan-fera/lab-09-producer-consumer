@@ -3,12 +3,11 @@
 //
 
 #include "Parser.hpp"
-
-#include <fstream>
 #include <string>
-
-#include "Downloader.hpp"
+#include <algorithm>
+#include <regex>
 #include "gumbo.h"
+
 bool isImage(const std::string& url) {
   size_t lastDotPos = url.find_last_of('.');
   if (lastDotPos == std::string::npos) return false;
@@ -40,7 +39,7 @@ static void search_for_links(GumboNode* node, Page p) {
     std::regex rx(R"((^http[s]?://.*)|(/.*))");
     std::string tmp = href->value;
     if (!regex_match(tmp.begin(), tmp.end(), rx)) return;
-    //std::cout<<"tyt"<<std::endl;
+
     if (href->value[0] == '/') {
       tmp = p.protocol + p.host + href->value;
     } else {
@@ -48,10 +47,9 @@ static void search_for_links(GumboNode* node, Page p) {
     }
 
     if (isImage(tmp)) {
-      //std::cout << tmp << std::endl;
       Parser::queue_writer.push(std::move(tmp));
-    } else{
-      if (p.depth  == 1) return;
+    } else {
+      if (p.depth == 1) return;
       URL _url{tmp, p.depth - 1};
       Parser::queue_url.push(std::move(_url));
     }
@@ -64,17 +62,14 @@ static void search_for_links(GumboNode* node, Page p) {
 }
 
 void Parser::parse() {
-//std::cout<<"tyt"<<std::endl;
-try{
-  if (!Downloader::queue_pages.empty()) {
-    Page _tmp = Downloader::queue_pages.front();
-    GumboOutput* output =
-        gumbo_parse(_tmp.page.c_str());//const char*
-    search_for_links(output->root, _tmp);
-    gumbo_destroy_output(&kGumboDefaultOptions, output);
-    Downloader::queue_pages.pop();
-  }}
-catch (...) {
-
-}
+  try {
+    if (!Downloader::queue_pages.empty()) {
+      Page _tmp = Downloader::queue_pages.front();
+      GumboOutput* output = gumbo_parse(_tmp.page.c_str());  // const char*
+      search_for_links(output->root, _tmp);
+      gumbo_destroy_output(&kGumboDefaultOptions, output);
+      Downloader::queue_pages.pop();
+    }
+  } catch (...) {
+  }
 }

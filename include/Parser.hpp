@@ -5,19 +5,19 @@
 #ifndef TEMPLATE_PARSER_HPP
 #define TEMPLATE_PARSER_HPP
 #include <iostream>
+#include "Downloader.hpp"
 #include "Queue.hpp"
-#include <atomic>
-struct URL{
+
+struct URL {
   std::string url;
   size_t depth;
 };
-class Parser{
+class Parser {
  public:
   explicit Parser() = delete;
   static void parse();
   inline static Queue<URL> queue_url;
   inline static Queue<std::string> queue_writer;
- // static std::atomic<bool> _finish;
 };
 
 #endif  // TEMPLATE_PARSER_HPP
