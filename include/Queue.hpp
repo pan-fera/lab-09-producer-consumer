@@ -1,9 +1,9 @@
 //
-// Created by hacker on 4/11/21.
+// Copyright [2021] <pan_fera>
 //
 
-#ifndef TEMPLATE_QUEUE_HPP
-#define TEMPLATE_QUEUE_HPP
+#ifndef INCLUDE_QUEUE_HPP_
+#define INCLUDE_QUEUE_HPP_
 
 #include <iostream>
 #include <mutex>
@@ -36,9 +36,10 @@ class Queue {
     return _queue.empty();
   }
   int _counter;
+
  private:
   std::mutex _mut;
   std::queue<T> _queue;
 };
 
-#endif  // TEMPLATE_QUEUE_HPP
+#endif  // INCLUDE_QUEUE_HPP_

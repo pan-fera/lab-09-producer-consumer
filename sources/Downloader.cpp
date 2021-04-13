@@ -1,8 +1,7 @@
 //
-// Created by hacker on 4/11/21.
+// Copyright [2021] <pan_fera>
 //
 #include <regex>
-#include "Queue.hpp"
 #include "ThreadPool.h"
 #include "Parser.hpp"
 #include <boost/asio/connect.hpp>
@@ -15,7 +14,6 @@
 #include <boost/beast/version.hpp>
 #include <cstdlib>
 #include <string>
-#include "root_certificates.hpp"
 #include "Downloader.hpp"
 
 using tcp = boost::asio::ip::tcp;     // from <boost/asio/ip/tcp.hpp>
@@ -99,7 +97,10 @@ void Downloader::DownloadHttps(Page&& _page) {
     boost::asio::io_context ioc;
     ssl::context ctx{ssl::context::sslv23_client};
 
-    load_root_certificates(ctx);
+    ctx.set_default_verify_paths();
+    ctx.add_verify_path("/etc/ssl/certs/");
+    ctx.set_verify_mode(boost::asio::ssl::verify_peer);
+    //load_root_certificates(ctx);
     tcp::resolver resolver{ioc};
     ssl::stream<tcp::socket> stream{ioc, ctx};
 

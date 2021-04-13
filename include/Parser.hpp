@@ -1,13 +1,13 @@
 //
-// Created by hacker on 4/11/21.
+// Copyright [2021] <pan_fera>
 //
 
-#ifndef TEMPLATE_PARSER_HPP
-#define TEMPLATE_PARSER_HPP
+#ifndef INCLUDE_PARSER_HPP_
+#define INCLUDE_PARSER_HPP_
 #include <iostream>
 #include "Downloader.hpp"
 #include "Queue.hpp"
-
+#include <string>
 struct URL {
   std::string url;
   size_t depth;
@@ -20,4 +20,4 @@ class Parser {
   inline static Queue<std::string> queue_writer;
 };
 
-#endif  // TEMPLATE_PARSER_HPP
+#endif  // INCLUDE_PARSER_HPP_

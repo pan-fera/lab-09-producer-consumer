@@ -1,12 +1,12 @@
 //
-// Created by hacker on 4/11/21.
+// Copyright [2021] <pan_fera>
 //
 
 #include "Parser.hpp"
 #include <string>
 #include <algorithm>
 #include <regex>
-#include "gumbo.h"
+#include <gumbo.h>
 
 bool isImage(const std::string& url) {
   size_t lastDotPos = url.find_last_of('.');
