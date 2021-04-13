@@ -23,7 +23,7 @@ namespace beast = boost::beast;
 
 void parse_url(Page& _page, std::string& url) {
   size_t p_s = url.find_first_of(':');
-  _page.protocol = url.substr(0, p_s);
+  _page.protocol = url.substr(0, p_s+3);
   size_t h_s = url.find('/', p_s + 3);
 
   if (h_s == std::string::npos) {
@@ -48,8 +48,8 @@ void Downloader::DownloadPage() {
     Page _page{};
     parse_url(_page, url);
     _page.depth = _tmp.depth;
-    if (_page.protocol == "http") DownloadHttp(std::move(_page));
-    if (_page.protocol == "https") DownloadHttps(std::move(_page));
+    if (_page.protocol == "http://") DownloadHttp(std::move(_page));
+    if (_page.protocol == "https://") DownloadHttps(std::move(_page));
     Parser::queue_url.pop();
   }
 }
