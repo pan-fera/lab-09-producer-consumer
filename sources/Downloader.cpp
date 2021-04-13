@@ -23,7 +23,7 @@ namespace beast = boost::beast;
 
 void parse_url(Page& _page, std::string& url) {
   size_t p_s = url.find_first_of(':');
-  _page.protocol = url.substr(0, p_s+3);
+  _page.protocol = url.substr(0, p_s + 3);
   size_t h_s = url.find('/', p_s + 3);
 
   if (h_s == std::string::npos) {
@@ -100,7 +100,7 @@ void Downloader::DownloadHttps(Page&& _page) {
     ctx.set_default_verify_paths();
     ctx.add_verify_path("/etc/ssl/certs/");
     ctx.set_verify_mode(boost::asio::ssl::verify_peer);
-    //load_root_certificates(ctx);
+
     tcp::resolver resolver{ioc};
     ssl::stream<tcp::socket> stream{ioc, ctx};
 

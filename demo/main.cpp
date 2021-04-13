@@ -19,7 +19,6 @@ int main(int argc, char* argv[]) {
 
   po::variables_map vm;
   po::store(po::parse_command_line(argc, argv, desc), vm);
-  po::notify(vm);
 
   if (vm.count("help")) {
     std::cout << desc << std::endl;
@@ -53,8 +52,8 @@ int main(int argc, char* argv[]) {
 
   while (!Parser::queue_url.empty() || !Downloader::queue_pages.empty() ||
          Downloader::queue_pages._counter || Parser::queue_url._counter) {
-    pool_network.enqueue([] { Downloader::DownloadPage(); });
-    pool_parser.enqueue([] { Parser::parse(); });
+    pool_network.enqueue(Downloader::DownloadPage);
+    pool_parser.enqueue(Parser::parse);
   }
 
   std::ofstream ofs{output};

@@ -24,7 +24,6 @@ class Queue {
     std::lock_guard<std::mutex> lock(_mut);
     T _tmp = _queue.front();
     _queue.pop();
-  //  --_counter;
     return _tmp;
   }
   void pop() {
